@@ -29,19 +29,6 @@ function parserFunction(filePath) {
     data.status = (content.match(patterns.status) || [, ''])[1].trim();
     data.registrar = (content.match(patterns.registrar) || [, ''])[1].trim().replace(/\s+/g, ' ');
 
-    // since whois-isfree.txt has a different format, we need to parse it separately
-    // considering "palinda.nl is free" represents,
-    // "palinda.nl" as the domain name and "free" as the status
-    const isFreeMatch = content.match(patterns.isFreeRegex);
-    if (isFreeMatch) {
-        if(data.domainName === ''){
-            data.domainName = isFreeMatch[1].trim();
-        }
-        if(data.status === ''){
-            data.status = 'free';
-        }
-    }
-
     return data;
 }
 

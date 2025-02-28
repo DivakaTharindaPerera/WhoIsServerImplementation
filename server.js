@@ -1,22 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const parserFunction = require('./parser');
+const writeData = require('./writeToFile');
 
 const DATA_DIR = './data'; // directory containing TXT files
-const OUTPUT_FILE = './out/data.json'; // output file to store parsed data
+let objects = []; // array to store parsed data
 
-const workers = [];
 let completed = 0;
-
-function writeData(parsedData) {
-    // append data to output file
-    // since there can be 10M+ domain files, we need to append to a file
-    // this way we have prevented loading the whole already written data JSON content in to the memory
-    // the data will be in a single line. so when the HTTP request comes, 
-    // we can only load a single line to the memory and get the required data wihout loading the whole file into the memory
-    fs.appendFileSync(OUTPUT_FILE, JSON.stringify(parsedData) + '\n');
-}
-
 
 // read all files in the directory
 fs.readdir(DATA_DIR, (err, files) => {
@@ -26,15 +16,32 @@ fs.readdir(DATA_DIR, (err, files) => {
     }
 
     files.forEach(file => {
-        processFile(file,files);
+        processFile(file);
+        completed++;
+
+        if(objects.length >= 1000 || completed === files.length){
+            // writing data to the file in bacthes in order to avoid writing overhead
+            writeData(objects);
+            objects = [];
+        }
     });
 });
 
-function processFile(file, files){
+function processFile(file){
     const filePath = path.join(DATA_DIR, file);
 
     const data = parserFunction(filePath);
-    writeData(data);
+
+    // check if all the data is empty
+    if(Object.values(data).every(value => value === '')){
+        console.log('No data found in file ', file);
+        return;
+    }
+
+    // check if the domain name is empty
+    if(data.domainName === ''){
+        console.log('Domain name is empty in file ', file);
+    }
+
+    objects.push(data);
 }
-
-
