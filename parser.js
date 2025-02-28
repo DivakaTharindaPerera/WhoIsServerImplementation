@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+// uses regex patterns to extract the required data in efficient way
 // REGEX patterns
 const patterns = {
     domain: /Domain name:\s*(\S+)/i,
