@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test.js"
+    "test": "node testForImproved.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/DivakaTharindaPerera/WhoIsServerImplementation/issues"
   },
-  "homepage": "https://github.com/DivakaTharindaPerera/WhoIsServerImplementation#readme"
+  "homepage": "https://github.com/DivakaTharindaPerera/WhoIsServerImplementation#readme",
+  "dependencies": {
+    "workerpool": "^9.2.0"
+  }
 }
