@@ -4,7 +4,8 @@
   "description": "server for providing information on domains",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js"
+    "start": "node server.js",
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",

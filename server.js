@@ -9,23 +9,25 @@ let objects = []; // array to store parsed data
 let completed = 0;
 
 // read all files in the directory
-fs.readdir(DATA_DIR, (err, files) => {
-    if (err) {
-        console.error('Error reading directory:', err);
-        return;
-    }
-
-    files.forEach(file => {
-        processFile(file);
-        completed++;
-
-        if(objects.length >= 1000 || completed === files.length){
-            // writing data to the file in bacthes in order to avoid writing overhead
-            writeData(objects);
-            objects = [];
+function readAllFiles(directory = DATA_DIR){
+    fs.readdir(directory, (err, files) => {
+        if (err) {
+            console.error('Error reading directory:', err);
+            return;
         }
+
+        files.forEach(file => {
+            processFile(file);
+            completed++;
+
+            if(objects.length >= 1000 || completed === files.length){
+                // writing data to the file in bacthes in order to avoid writing overhead
+                writeData(objects);
+                objects = [];
+            }
+        });
     });
-});
+}
 
 function processFile(file){
     const filePath = path.join(DATA_DIR, file);
@@ -33,6 +35,7 @@ function processFile(file){
     const data = parserFunction(filePath);
 
     // check if all the data is empty
+    // no point of keeping empty data
     if(Object.values(data).every(value => value === '')){
         console.log('No data found in file ', file);
         return;
@@ -45,3 +48,7 @@ function processFile(file){
 
     objects.push(data);
 }
+
+readAllFiles(DATA_DIR);
+
+module.exports = readAllFiles;
