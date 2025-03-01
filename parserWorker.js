@@ -10,6 +10,7 @@ const patterns = {
     registrar: /Registrar:\s*([\s\S]*?)(?=\n(?:Abuse Contact|Reseller|DNSSEC|$))/i,
 };
 
+// the method to extract data from the file using REGEX patterns
 function parseFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
 

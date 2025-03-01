@@ -11,6 +11,9 @@ const port = 3000;
 
 const DATA_DIR = './data'; // directory containing TXT files
 const POOL_SIZE = os.cpus().length // number of workers to use
+
+// create a worker pool with the specified number of workers
+// these workers will process the files in parallel
 const pool = workerpool.pool('./parserWorker.js', {maxWorkers:POOL_SIZE});
 
 const lmdbDB = open({
@@ -48,6 +51,8 @@ function writeBatchToLMDB(batch) {
     });
 }
 
+// the writing to lmdb is happening asynchronously
+// a writing queue is used to store the writing data for lmdb
 async function processWriteQueue() {
     if (isWriting || writeQueue.length === 0) return;
     isWriting = true;
@@ -123,6 +128,7 @@ function readAllFiles(directory = DATA_DIR){
     });
 }
 
+// GET endpoint to retrieve the domain status and created date
 app.get('/domain/:domainName', (req, res) => {
     const domainName = req.params.domainName;
 
