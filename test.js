@@ -49,11 +49,6 @@ function processFile(file){
         return;
     }
 
-    // check if the domain name is empty
-    if(data.domainName === ''){
-        console.log('Domain name is empty in file ', file);
-    }
-
     objects.push(data);
 }
 
