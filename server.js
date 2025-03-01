@@ -20,17 +20,22 @@ function readAllFiles(directory = DATA_DIR){
         }
 
         files.forEach(file => {
-            console.log('running... ', file);
             const filePath = path.join(directory, file)
 
             pool.exec('parseFile', [filePath]).then(data => {
                 if (data.domainName === '') {
+                    // using these logs we can find which file has no domain name
+                    // useful for debugging
                     console.log('Domain name is empty in file:', file);
                 }
 
                 if (Object.values(data).every(value => value === '')) {
+                    // using these logs we can find which file has no data
+                    // useful for debugging
                     console.log('No data found in file:', file);
                 }else{
+                    // only push data to the array if it has data
+                    // so that we dont keep empty objects in the array
                     objects.push(data);
                 }
 
@@ -43,6 +48,8 @@ function readAllFiles(directory = DATA_DIR){
                 }
 
                 if(completed === files.length){
+                    // we need to terminate the worker pool when all files have been processed
+                    // otherwise the worker pool will keep running in the background waiting for new jobs
                     pool.terminate();
                 }
             }).catch(err => {

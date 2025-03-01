@@ -6,8 +6,12 @@ const writeData = require('./writeToFile');
 const DATA_DIR = './test_data'; 
 const POOL_SIZE = require('os').cpus().length; // Use all available CPU cores
 
+let totalTime = 0;
 
-const pool = workerpool.pool('./parserWorker.js', { maxWorkers: POOL_SIZE });
+// measuring time for the workerpool initialization
+const start = Date.now();
+const pool = workerpool.pool('./parserWorker.js', { maxWorkers: POOL_SIZE });;
+const end = Date.now();
 
 let objects = []; 
 let completed = 0;
@@ -21,7 +25,6 @@ function measureTime(callback) {
     return end - start;
 }
 
-// Read all files in the directory
 function readAllFiles(directory = DATA_DIR) {
     fs.readdir(directory, (err, files) => {
         if (err) {
@@ -30,7 +33,6 @@ function readAllFiles(directory = DATA_DIR) {
         }
 
         const totalFiles = files.length * 100000; 
-        let totalTime = 0;
 
         files.forEach(file => {
             const filePath = path.join(directory, file);
